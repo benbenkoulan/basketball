@@ -3,3 +3,7 @@
 		这是测试页面
 	</div>
 </template>
+
+<script>
+	
+</script>

@@ -16,8 +16,8 @@ module.exports = {
 	output: {
 		publicPath: '/assets/',
 		path: path.resolve(__dirname, '../dist'),
-		filename: isProd ? '[name].[chunkhash].js' : '[name].js',
-		chunkFilename: isProd ? '[name].[chunkhash].js' : '[name].js'
+		filename: isProd ? '[name].[chunkhash].js' : '[name].[hash].js',
+		chunkFilename: isProd ? '[name].[chunkhash].js' : '[name].[hash].js'
 	},
 	module: {
 		rules: [{
@@ -52,6 +52,7 @@ module.exports = {
 			css: path.resolve('./src/css'),
 			com: path.resolve('./src/com'),
 			views: path.resolve('./src/views'),
+			utils: path.resolve('./src/utils'),
 			vue$: path.resolve('./lib/vue.runtime.esm.js')
 		},
 		extensions: ['.js', '.css', '.vue']

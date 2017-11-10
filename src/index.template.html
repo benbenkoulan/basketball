@@ -6,15 +6,19 @@
 	<link rel="shortcut icon" sizes="48x48" href="/public/basketball.jpg">
 	<title>{{title}}</title>
 	<script>
-		var dpr, fontSize, scale;
+		var dpr, fontSize, scale, width;
 		var docEl = document.documentElement;
 		var styleEl = document.createElement('style');
 		var metaEl = document.querySelector('meta[name="viewport"]');
 		dpr = window.devicePixelRatio || 1;
-		fontSize = docEl.clientWidth * dpr / 10;
 		scale = 1 / dpr;
 		metaEl.setAttribute('content', 'initial-scale=' + scale + ', maximum-scale= ' + scale + ', minimum-scale=' + scale + ', user-scalable=no');
 		docEl.setAttribute('data-dpr', dpr);
+		width = docEl.getBoundingClientRect().width;
+		if(width / dpr > 540){
+			width = 540 * dpr;
+		}
+		fontSize = width / 10;
 		docEl.firstElementChild.appendChild(styleEl);
 		styleEl.innerHTML = 'html { font-size: ' + fontSize + 'px }';
 	</script>
