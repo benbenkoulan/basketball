@@ -32,15 +32,15 @@
 			}
 		},
 		mounted(){
-			var scroll = new Scroll(this.wrapper, {  vertical: true, noBounce: true, slide: true, deceleration: 0.005 });
+			var scroll = new Scroll(this.wrapper, {  vertical: true, noBounce: true, slide: true, deceleration: 0.01 });
 			scroll.on('move', function(postion){
-				console.log(postion);
+				//console.log(postion);
 			})
 			.on('moveEnd', function(position){
-				console.log('-------end---------');
+				/*console.log('-------end---------');
 				console.log(position);
-				console.log('-------end---------');
-			})
+				console.log('-------end---------');*/
+			});
 		}
 	}
 </script>

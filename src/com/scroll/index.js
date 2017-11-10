@@ -1,5 +1,6 @@
 import style from './style'
 import eventMixin from 'utils/eventMixin'
+import { requestAnimationFrame, cancelAnimationFrame } from 'utils/raf'
 
 function Scroll(el, options){
 	this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
@@ -60,6 +61,7 @@ function start(e){
 		this.fixLoop();
 	}
 	this.isStart = true;
+	this.pause();
 	this.startTime = new Date().getTime();
 	this.startX = this.movedX = e.targetTouches[0].clientX;
 	this.startY = this.movedY = e.targetTouches[0].clientY;
@@ -101,10 +103,12 @@ function end(e){
 
 	var distance = (this.vertical ? currentY : currentX) - this.start;
 	var absDistance = Math.abs(distance);
+	var v;
+	var direction = distance > 0 ? 1 : -1;
 	if(dt < 300 && absDistance > 100 && this.slide){
-		let s = absDistance / dt;
-		d = s * s / (2 * this.deceleration) * (distance > 0 ? 1 : -1);
-		duration = Math.sqrt(2 * Math.abs(d) / this.deceleration);
+		v = absDistance / dt;
+		d = v * v / (2 * this.deceleration) * direction;
+		duration = Math.round(v / this.deceleration);
 	} else if(!this.noBounce){
 		let distance = this.vertical ? currentY - this.startY : currentX - this.startX;
 		let md = Math.abs(distance % this.step);
@@ -131,9 +135,37 @@ function end(e){
 		if(position.x > this.max) position.x = this.max;
 	}
 	
-	this.setPosition(position, duration);
+	this.to(position, v, duration, 0.005, direction);
+	//this.setPosition(position, duration);
 	this.isStart = false;
 	this.startX = this.startY = 0;
+}
+
+Scroll.prototype.to = function(position, v, time, deceleration, direction){
+	var beginTime = new Date();
+	var _position = this.getPosition();
+	var x = (this.vertical ? position.y : position.x) - (this.vertical ? position.y : position.x);
+	var self = this;
+	var id;
+	console.log('----------destination----')
+	console.log(position)
+	console.log('----------destination----')
+	var _to = function(){
+		var dt = new Date() - beginTime;
+		if(dt >= time){
+			self.setPosition(position);
+			cancelAnimationFrame(id);
+			return;
+		}
+		var _x = (v * dt + direction * dt * dt * deceleration / 2) * direction;
+		var current = JSON.parse(JSON.stringify(_position));
+		if(self.vertical) current.y += _x;
+		else current.x += _x;
+		console.log(current);
+		self.setPosition(current);
+		id = requestAnimationFrame(_to);
+	}
+	_to();
 }
 
 Scroll.prototype.setPosition = function(position, duration = 0){
@@ -230,6 +262,10 @@ Scroll.prototype.stopAutoPlay = function(){
 	if(!this.autoPlayID) return;
 	clearInterval(this.autoPlayID);
 	this.autoPlayID = undefined;
+}
+
+Scroll.prototype.pause = function(){
+	this.scroller.style.transitionDuration = '0';
 }
 
 eventMixin(Scroll);
