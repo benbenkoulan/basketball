@@ -5,13 +5,18 @@ import { requestAnimationFrame, cancelAnimationFrame } from 'utils/raf'
 function Scroll(el, options){
 	this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
 	this.scroller = this.wrapper.children[0];
-	this.deceleration = options.deceleration;
-	this.vertical = !!options.vertical;
+	this.deceleration = options.deceleration || 0.01;
 	this.noBounce = !!options.noBounce;	//弹性效果
 	this.wheel = !!options.wheel;	//滚动轮效果
 	this.slide = !!options.slide;	//滑动
 	this.loop = !!options.loop;		//循环
 	this.step = options.step;
+
+	this.property = options.vertical ? 'Y' : 'X';
+
+	this.min = options.min;
+	this.max = options.max;
+
 	this.isStart = false;
 	this.events = [];
 	init.call(this);
@@ -31,9 +36,6 @@ function init(){
 		this.index = 1;
 		this.slideTo();
 	}
-	this.max = 0;
-	this.min = -((this.itemLength - 1) * this.step || this.scroller.getBoundingClientRect().height - this.wrapper.getBoundingClientRect().height);
-	
 	this.scroller.addEventListener('touchstart', preventDefault(start, this));
 	this.scroller.addEventListener('touchmove', preventDefault(move, this));
 	this.scroller.addEventListener('touchend', preventDefault(end, this));
@@ -63,28 +65,20 @@ function start(e){
 	this.isStart = true;
 	this.pause();
 	this.startTime = new Date().getTime();
-	this.startX = this.movedX = e.targetTouches[0].clientX;
-	this.startY = this.movedY = e.targetTouches[0].clientY;
-
-	this.start = this.vertical ? this.startY : this.startX;
+	this.start = this.moved = this.moveStart = e.touches[0]['page' + this.property];
 	this.trigger('start');
 }
 
 function move(e){
 	if(!this.isStart) return;
-	var currentX = e.targetTouches[0].clientX;
-	var currentY = e.targetTouches[0].clientY;
-
-	var d = this.vertical ? currentY - this.movedY : currentX - this.movedX;
-	this.movedX = currentX;
-	this.movedY = currentY;
-
 	var t = new Date().getTime();
 	if(t - this.startTime > 300){
-		this.start = this.vertical ? currentY : currentX;
+		this.moveStart = current;
 		this.startTime = t;
 	}
-
+	var current = e.touches[0]['page' + this.property];
+	var d = current - this.moved;	
+	this.moved = current;
 	var position = this.getComputedPosition(d);
 	this.setPosition(position);
 	this.trigger('move', position);
@@ -92,99 +86,94 @@ function move(e){
 
 function end(e){
 	if(!this.isStart) return;
+	var current = e.changedTouches[0]['page' + this.property];
 
-	var currentX = e.changedTouches[0].clientX;
-	var currentY = e.changedTouches[0].clientY;
-
-	var duration = 500;
-	var d = 0;
 	var t = new Date().getTime();
 	var dt = t - this.startTime;
 
-	var distance = (this.vertical ? currentY : currentX) - this.start;
-	var absDistance = Math.abs(distance);
-	var v;
-	var direction = distance > 0 ? 1 : -1;
-	if(dt < 300 && absDistance > 100 && this.slide){
-		v = absDistance / dt;
-		d = v * v / (2 * this.deceleration) * direction;
-		duration = Math.round(v / this.deceleration);
+	var moveDistance = current - this.moveStart;
+	var absMoveDistance = Math.abs(moveDistance);
+	var direction = moveDistance > 0 ? 1 : -1;
+	var position = this.getPosition();
+
+	if(position[this.property] < this.max && position[this.property] > this.min && dt < 300 && absMoveDistance > 100 && this.slide){
+		var v = absMoveDistance / dt;
+		let d = v * v / (2 * this.deceleration) * direction;
+		var _position = JSON.parse(JSON.stringify(position));
+		position[this.property] += d;
+		this.correct(position);
+		d = position[this.property] - _position[this.property];
+		var deceleration = v * v / Math.abs(d) / 2;
+		var duration = v / deceleration;
+		this.to(position, v, duration, deceleration, direction);
 	} else if(!this.noBounce){
-		let distance = this.vertical ? currentY - this.startY : currentX - this.startX;
+		let distance = current - this.start;
 		let md = Math.abs(distance % this.step);
+		let d;
 		if(md > this.step / 2){
 			d = (this.step - md) * (distance > 0 ? 1 : -1);
 		} else {
 			d = md * (distance > 0 ? -1 : 1);
 		}
+		position[this.property] += d;
+		this.correct(position);
+		this.setPosition(position, 500);
 	}
-
-	var position = this.getComputedPosition(d);
-	if(this.step){
-		if(this.vertical){
-			position.y = Math.round(position.y / this.step) * this.step;
-		} else {
-			position.x = Math.round(position.x / this.step) * this.step;
-		}
-	}
-	if(this.vertical){
-		if(position.y < this.min) position.y = this.min;
-		if(position.y > this.max) position.y = this.max;
-	} else {
-		if(position.x < this.min) position.x = this.min;
-		if(position.x > this.max) position.x = this.max;
-	}
-	
-	this.to(position, v, duration, 0.005, direction);
-	//this.setPosition(position, duration);
 	this.isStart = false;
-	this.startX = this.startY = 0;
+	this.start = this.moved = this.moveStart = 0;
 }
 
 Scroll.prototype.to = function(position, v, time, deceleration, direction){
+	console.log(position);
 	var beginTime = new Date();
 	var _position = this.getPosition();
-	var x = (this.vertical ? position.y : position.x) - (this.vertical ? position.y : position.x);
+	console.log(_position);
 	var self = this;
 	var id;
-	console.log('----------destination----')
-	console.log(position)
-	console.log('----------destination----')
 	var _to = function(){
 		var dt = new Date() - beginTime;
-		if(dt >= time){
+		if(dt >= time){;
 			self.setPosition(position);
 			cancelAnimationFrame(id);
 			return;
 		}
-		var _x = (v * dt + direction * dt * dt * deceleration / 2) * direction;
-		var current = JSON.parse(JSON.stringify(_position));
-		if(self.vertical) current.y += _x;
-		else current.x += _x;
-		console.log(current);
+		let d = (v * dt - dt * dt * deceleration / 2) * direction;
+		let current = JSON.parse(JSON.stringify(_position));
+		current[self.property] += d;
 		self.setPosition(current);
 		id = requestAnimationFrame(_to);
 	}
 	_to();
 }
 
+Scroll.prototype.correct = function(position){
+	if(this.step){
+		position[this.property] = Math.round(position[this.property] / this.step) * this.step;
+	}
+	if(this.min !== undefined && position[this.property] < this.min) position[this.property] = this.min;
+	if(this.max !== undefined && position[this.property] > this.max) position[this.property] = this.max;
+}
+
 Scroll.prototype.setPosition = function(position, duration = 0){
 	var scrollerStyle = this.scroller.style;
 	//TODO:优化
+	if(duration > 0){
+		console.log(position);
+	}
 	scrollerStyle.transitionDuration = `${duration}ms`;
 	scrollerStyle.webkitTransform = scrollerStyle.MsTransform = scrollerStyle.msTransform = scrollerStyle.MozTransform = scrollerStyle.OTransform = scrollerStyle.transform 
-	=  `translate3d(${position.x}px, ${position.y}px, 0)`;
+	=  `translate3d(${position.X}px, ${position.Y}px, 0)`;
 	if(this.wheel){
 		for(let i = 0, len = this.items.length;i < len;i++){
 			let item = this.items[i];
-			let deg = ((position.y / this.step) + i) * this.step / 2;
+			let deg = ((position.Y / this.step) + i) * this.step / 2;
 			let itemStyle = item.style;
 			itemStyle.transitionDuration = `${duration}ms`;
 			itemStyle.webkitTransform = itemStyle.MsTransform = itemStyle.msTransform = itemStyle.MozTransform = itemStyle.OTransform = itemStyle.transform = 
 			`rotateX(${deg}deg)`;
 		}
 	}
-	this.index = Math.abs(Math.floor(this.vertical ? position.y / this.step : position.x / this.step));
+	this.index = Math.abs(Math.floor(position[this.property] / this.step));
 }
 
 Scroll.prototype.getPosition = function(){
@@ -202,27 +191,23 @@ Scroll.prototype.getPosition = function(){
 		transformMatrix = curStyle.MozTransform || curStyle.OTransform || curStyle.MsTransform || curStyle.msTransform  || curStyle.transform || curStyle.getPropertyValue('transform').replace('translate(', 'matrix(1, 0, 0, 1,');
 		matrix = transformMatrix.toString().split(',');
 	}
-	let x, y;
-	if (window.WebKitCSSMatrix) {	//Latest Chrome and webkits Fix
-		y = transformMatrix.m42;
-    	x = transformMatrix.m41;
+	let X, Y;
+	if (window.WebKitCSSMatrix) {//Latest Chrome and webkits Fix
+		Y = transformMatrix.m42;
+    	X = transformMatrix.m41;
 	} else if (matrix.length === 16) {	//Crazy IE10 Matrix
-		y = parseFloat(matrix[13]);
-    	x = parseFloat(matrix[12]);
+		Y = parseFloat(matrix[13]);
+    	X = parseFloat(matrix[12]);
 	} else {	//Normal Browsers
-		y = parseFloat(matrix[5]);
-    	x = parseFloat(matrix[4]);
+		Y = parseFloat(matrix[5]);
+    	X = parseFloat(matrix[4]);
 	}
-    return { x, y }
+    return { X, Y }
 }
 
 Scroll.prototype.getComputedPosition = function(d){
 	var position = this.getPosition();
-	if(this.vertical){
-		position.y += d;
-	} else {
-		position.x += d;
-	}
+	position[this.property] += d;
 	return position;
 }
 
@@ -230,11 +215,7 @@ Scroll.prototype.slideTo = function(i, duration){
 	if(i === undefined) i = this.index;
 	var d = -this.step * i;
 	var position = this.getPosition();
-	if(this.vertical){
-		position.y = d;
-	} else {
-		position.x = d;
-	}
+	position[this.property] = d;
 	this.setPosition(position, duration);
 }
 
