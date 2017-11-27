@@ -7,7 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const plugins = [ new webpack.DefinePlugin({ 'process.env.NODE_ENV': process.env.NODE_ENV || 'development' }) ]
 
-if(isProd) plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: { warning: false } }))
+if(isProd) plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }))
 
 if(isProd) plugins.push(new ExtractTextPlugin('css/style.[contenthash:8].css'))
 
@@ -36,7 +36,10 @@ module.exports = {
 		},{
 			test: /\.css$/,
 			exclude: /node_modules/,
-			use:  isProd ? ExtractTextPlugin.extract(['vue-style-loader', 'css-loader', 'postcss-loader']) : ['vue-style-loader', 'css-loader', 'postcss-loader']
+			use:  isProd ? ExtractTextPlugin.extract({
+				fallback: 'vue-style-loader',
+				use: ['css-loader', 'postcss-loader']
+			}) : ['vue-style-loader', 'css-loader', 'postcss-loader']
 		},{
 			test: /\.vue$/,
 			loader: 'vue-loader',
@@ -57,5 +60,6 @@ module.exports = {
 		},
 		extensions: ['.js', '.css', '.vue']
 	},
-	devtool: isProd ? false : '#cheap-module-source-map'
+	devtool: isProd ? false : '#cheap-module-source-map',
+	plugins
 }
