@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const getIndexView = () => import('../views/index')
+const getGamesView = () => import('../views/games')
 const getTestView = () => import('../views/test')
 
 export function createRouter(){
@@ -20,6 +21,10 @@ export function createRouter(){
 			name: 'test',
 			path: '/test',
 			component: getTestView
+		},{
+			name: 'games',
+			path: '/games',
+			component: getGamesView
 		}]
 	})
 }

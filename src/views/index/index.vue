@@ -62,7 +62,7 @@
 </script>
 
 <style scoped>
-	#container { overflow: hidden; height: 100%; display: flex; flex-direction: column; }
+	#container { overflow: hidden; height: 100%; }
 	#wrapper { overflow: hidden; }
 	#scroller {
 	    -webkit-tap-highlight-color: rgba(0,0,0,0);
