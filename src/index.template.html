@@ -19,6 +19,7 @@
 			width = 540 * dpr;
 		}
 		fontSize = width / 10;
+		docEl.setAttribute('data-size', fontSize);
 		docEl.firstElementChild.appendChild(styleEl);
 		styleEl.innerHTML = 'html { font-size: ' + fontSize + 'px }';
 	</script>

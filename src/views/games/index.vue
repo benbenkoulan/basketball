@@ -56,7 +56,7 @@
 				vertical: true,
 				slide: true,
 				max: 0,
-				min: window.innerHeight - this.doingScroller.clientHeight,
+				min: window.innerHeight - this.doingScroller.clientHeight - G.size * 1.2,
 				name: 'doingScroll'
 			});
 
@@ -64,7 +64,7 @@
 				slide: true,
 				vertical: true,
 				max: 0,
-				min: window.innerHeight - this.doneScroller.clientHeight,
+				min: window.innerHeight - this.doneScroller.clientHeight - G.size * 1.2,
 				name: 'doneScroll'
 			});
 
@@ -91,6 +91,7 @@
 				if(this.index == index) return;
 				this.index = index;
 				hScroll.slideTo(index, 600)
+				this.transformX(this.index * window.innerWidth / 2)
 			},
 			transformX(toX){
 				var self = this,
@@ -118,7 +119,7 @@
 	.tabs { display: flex; position: relative; }
 	.tab { flex: 1; text-align: center; height: 1.2rem; line-height: 1.2rem; }
 	.tab.active { color: #00BFFF; }
-	.tab-active-line { position: absolute; left: 0; bottom: 0; width: 50%; height: 5px; background: #00BFFF; content: ""; }
+	.tab-active-line { position: absolute; left: 0; bottom: 0; width: 50%; height: 4px; background: #00BFFF; content: ""; }
 
 	#pageWrapper { overflow: hidden; }
 	#pageScroller { display: flex; }
