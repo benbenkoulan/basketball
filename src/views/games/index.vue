@@ -38,8 +38,8 @@
 		computed: {
 			items(){
 				var items = [];
-				items.length = 100;
-				return items.fill(100);
+				items.length = 200;
+				return items.fill(200);
 			},
 			doingScroller(){
 				return this.$refs.doingScroller;
@@ -62,7 +62,7 @@
 				slide: true,
 				vertical: true,
 				max: 0,
-				min: window.innerHeight - this.doneScroller.clientHeight - G.size * 1.2,
+				min: window.innerHeight - this.doneScroller.clientHeight - G.size,
 				name: 'doneScroll'
 			});
 
@@ -96,7 +96,7 @@
 
 <style scoped>
 	.tabs { display: flex; position: relative; }
-	.tab { flex: 1; text-align: center; height: 1.2rem; line-height: 1.2rem; border-bottom: 1px solid #ccc; }
+	.tab { flex: 1; text-align: center; height: 1rem; line-height: 1rem; border-bottom: 1px solid #ccc; }
 	.tab.active { color: #00BFFF; border-bottom: 4px solid #00BFFF; }
 
 	#pageWrapper { overflow: hidden; }
