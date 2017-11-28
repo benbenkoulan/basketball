@@ -1,4 +1,3 @@
-import style from './style'
 import eventMixin from 'utils/eventMixin'
 import { requestAnimationFrame, cancelAnimationFrame } from 'utils/raf'
 

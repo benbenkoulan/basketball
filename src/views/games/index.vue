@@ -3,7 +3,6 @@
 		<div class="tabs">
 			<div class="tab" :class="{'active': index == 0}" @click="slideTo(0)">进行中</div>
 			<div class="tab" :class="{'active': index == 1}" @click="slideTo(1)">已完成</div>
-			<p class="tab-active-line" :style="{ transform: 'translateX(' + x + 'px)' }"></p>
 		</div>
 		<div id="pageWrapper">
 			<div id="pageScroller">
@@ -33,7 +32,6 @@
 	export default {
 		data(){
 			return {
-				x: 0,
 				index: 0
 			}
 		},
@@ -77,13 +75,13 @@
 			});
 
 			var self = this;
-			hScroll.on('move', function(delta){
-				self.transitionDuration = 0;
-				self.x -= delta / 2;
+			hScroll.on('move', function(){
+				let position = this.getPosition();
+				let X = Math.abs(position.X);
+				self.index = Math.round(X / window.innerWidth);
 			})
 			.on('moveEnd', function(){
 				self.index = this.getIndex();
-				self.transformX(self.index * window.innerWidth / 2)
 			})
 		},
 		methods: {
@@ -91,25 +89,6 @@
 				if(this.index == index) return;
 				this.index = index;
 				hScroll.slideTo(index, 600)
-				this.transformX(this.index * window.innerWidth / 2)
-			},
-			transformX(toX){
-				var self = this,
-					id;
-				var delta = toX - self.x;
-				if(delta == 0) return;
-				var ratio = delta / Math.abs(delta);
-				var transform = function(){
-					if((ratio > 0 && self.x < toX) || (ratio < 0 && self.x > toX)){
-						self.x += (ratio * 10);
-					} else {
-						self.x = toX;
-						cancelAnimationFrame(id);
-						return;
-					}
-					id = requestAnimationFrame(transform);
-				}
-				transform();
 			}
 		}
 	}
@@ -117,9 +96,8 @@
 
 <style scoped>
 	.tabs { display: flex; position: relative; }
-	.tab { flex: 1; text-align: center; height: 1.2rem; line-height: 1.2rem; }
-	.tab.active { color: #00BFFF; }
-	.tab-active-line { position: absolute; left: 0; bottom: 0; width: 50%; height: 4px; background: #00BFFF; content: ""; }
+	.tab { flex: 1; text-align: center; height: 1.2rem; line-height: 1.2rem; border-bottom: 1px solid #ccc; }
+	.tab.active { color: #00BFFF; border-bottom: 4px solid #00BFFF; }
 
 	#pageWrapper { overflow: hidden; }
 	#pageScroller { display: flex; }
