@@ -54,7 +54,7 @@
 				vertical: true,
 				slide: true,
 				max: 0,
-				min: window.innerHeight - this.doingScroller.clientHeight - G.size * 1.2,
+				min: window.innerHeight - this.doingScroller.clientHeight - G.size,
 				name: 'doingScroll'
 			});
 
@@ -88,7 +88,7 @@
 			slideTo(index){
 				if(this.index == index) return;
 				this.index = index;
-				hScroll.slideTo(index, 600)
+				hScroll.slideTo(index, 500)
 			}
 		}
 	}

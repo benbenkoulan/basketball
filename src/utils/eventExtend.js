@@ -1,4 +1,6 @@
 export default function(obj){
+	obj.prototype.events = []
+	
 	obj.prototype.on = function(type, fn, context = this){
 		var e = this.events.find(event => event.type === type);
 		if(e) e = { type, fn };

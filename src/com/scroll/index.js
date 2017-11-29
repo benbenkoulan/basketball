@@ -1,7 +1,6 @@
-import eventMixin from 'utils/eventMixin'
+import { setTransform, getTransform, setDuration } from './dom'
+import eventExtend from 'utils/eventExtend'
 import { requestAnimationFrame, cancelAnimationFrame } from 'utils/raf'
-
-Scroll.LOCKDIRECTION = false;
 
 function Scroll(el, options){
 	this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
@@ -25,7 +24,6 @@ function Scroll(el, options){
 
 	this.isStart = false;
 	this.isLocked = false;
-	this.events = [];
 	init.call(this);
 }
 
@@ -194,20 +192,14 @@ function correct(position){
 }
 
 function setPosition(position, duration = 0){
-	var scrollerStyle = this.scroller.style;
-	//TODO:优化
-	scrollerStyle.transitionDuration = `${duration}ms`;
-	scrollerStyle.webkitTransform = scrollerStyle.MsTransform = scrollerStyle.msTransform = scrollerStyle.MozTransform = scrollerStyle.OTransform = scrollerStyle.transform 
-	=  `translate3d(${position.X}px, ${position.Y}px, 0)`;
+	setDuration(this.scroller, `${duration}ms`);
+	setTransform(this.scroller, `translate3d(${position.X}px, ${position.Y}px, 0)`);
 	if(this.wheel){
-		for(let i = 0, len = this.items.length;i < len;i++){
-			let item = this.items[i];
+		this.items.forEach((item, i) => {
 			let deg = ((position.Y / this.step) + i) * this.step / 2;
-			let itemStyle = item.style;
-			itemStyle.transitionDuration = `${duration}ms`;
-			itemStyle.webkitTransform = itemStyle.MsTransform = itemStyle.msTransform = itemStyle.MozTransform = itemStyle.OTransform = itemStyle.transform = 
-			`rotateX(${deg}deg)`;
-		}
+			setDuration(item, `${duration}ms`);
+			setTransform(item, `rotateX(${deg}deg)`);
+		})
 	}
 }
 
@@ -234,32 +226,7 @@ Scroll.prototype.to = function(position, v, time, deceleration, direction){
 }
 
 Scroll.prototype.getPosition = function(){
-	let curTransform, transformMatrix, matrix;
-	let curStyle = window.getComputedStyle(this.scroller, null);
-	if(window.WebKitCSSMatrix){
-		curTransform = curStyle.transform || curStyle.webkitTransform;
-		if (curTransform.split(',').length > 6) {
-			curTransform = curTransform.split(', ').map(function(a){
-				return a.replace(',','.');
-			}).join(', ');
-		}
-		transformMatrix = new window.WebKitCSSMatrix(curTransform === 'none' ? '' : curTransform);
-	} else {
-		transformMatrix = curStyle.MozTransform || curStyle.OTransform || curStyle.MsTransform || curStyle.msTransform  || curStyle.transform || curStyle.getPropertyValue('transform').replace('translate(', 'matrix(1, 0, 0, 1,');
-		matrix = transformMatrix.toString().split(',');
-	}
-	let X, Y;
-	if (window.WebKitCSSMatrix) {//Latest Chrome and webkits Fix
-		Y = transformMatrix.m42;
-    	X = transformMatrix.m41;
-	} else if (matrix.length === 16) {	//Crazy IE10 Matrix
-		Y = parseFloat(matrix[13]);
-    	X = parseFloat(matrix[12]);
-	} else {	//Normal Browsers
-		Y = parseFloat(matrix[5]);
-    	X = parseFloat(matrix[4]);
-	}
-    return { X, Y }
+	return getTransform(this.scroller);
 }
 
 Scroll.prototype.getComputedPosition = function(d){
@@ -313,6 +280,6 @@ Scroll.prototype.pause = function(){
 	this.scroller.style.transitionDuration = '0';
 }
 
-eventMixin(Scroll);
+eventExtend(Scroll);
 
 export default Scroll;
