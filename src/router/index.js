@@ -5,9 +5,10 @@ Vue.use(VueRouter)
 
 const getIndexView = () => import('../views/index')
 const getGamesView = () => import('../views/games')
+const getFollowView = () => import('../views/follow')
 const getTestView = () => import('../views/test')
 
-export function createRouter(){
+export default function createRouter(){
 	return new VueRouter({
 		mode: 'history',
 		routes: [{
@@ -25,6 +26,10 @@ export function createRouter(){
 			name: 'games',
 			path: '/games',
 			component: getGamesView
+		},{
+			name: 'follow',
+			path: '/follow',
+			component: getFollowView
 		}]
 	})
 }

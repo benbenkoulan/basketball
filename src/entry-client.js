@@ -1,15 +1,26 @@
 import { createApp } from './app'
 
-var { app, router } = createApp()
+var { app, store, router } = createApp()
 
 var G = { isClient: true }
 G.size = document.documentElement.getAttribute('data-size');
 
+if(window.__INITIAL_STATE__){
+	store.replaceState(window.__INITIAL_STATE__);
+}
+
 window.G = G;
 
 router.onReady(() => {
+	console.log('--onReady------');
 	router.beforeResolve((to, fr, next) => {
-		const matched = router.getMatchedComponents(to);
+		console.log('--beforeResolve------');
+		console.log(to);
+		console.log(fr);
+		const matchedComponents = router.getMatchedComponents(to);
+		if(matchedComponents.length > 0){
+			let matched = matchedComponents[0];
+		}
 		next();
 	});
 	app.$mount('#page')

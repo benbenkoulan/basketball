@@ -5,5 +5,5 @@
 html, body, main, section, header, footer, div, ul, table, tr, p, dl, dt { padding: 0; margin: 0 }
 html, body, #page { width: 100%; height: 100%; overflow: hidden; -webkit-overflow-scrolling: touch; }
 body * {
-	font-size: 0.4rem; color: #333;
+	font-size: 0.36rem; color: #333;
 }

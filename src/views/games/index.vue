@@ -49,13 +49,21 @@
 			}
 		},
 		components: { tab },
+		/*beforeRouteEnter(to, from, next){
+			console.log('------beforeRouteUpdate---------');
+			next();
+		},*/
+		created(){
+			this.fetchData();
+		},
 		mounted(){
+			console.log(this.$store.state.test);
+			console.log('--------mounted--------');
 			vScrolls.doingScroll = new Scroll('#doingWrapper', {
-				vertical: true,
 				slide: true,
+				vertical: true,
 				max: 0,
 				min: window.innerHeight - this.doingScroller.clientHeight - G.size,
-				name: 'doingScroll'
 			});
 
 			vScrolls.doneScroll = new Scroll('#doneWrapper', {
@@ -63,7 +71,6 @@
 				vertical: true,
 				max: 0,
 				min: window.innerHeight - this.doneScroller.clientHeight - G.size,
-				name: 'doneScroll'
 			});
 
 			hScroll = new Scroll('#pageWrapper', {
@@ -71,7 +78,6 @@
 				noOutOfBounds: true,
 				min: -window.innerWidth,
 				step: window.innerWidth,
-				name: 'hScroll'
 			});
 
 			var self = this;
@@ -85,6 +91,9 @@
 			})
 		},
 		methods: {
+			fetchData(){
+				console.log('----fetchData---------');
+			},
 			slideTo(index){
 				if(this.index == index) return;
 				this.index = index;
@@ -101,7 +110,7 @@
 
 	#pageWrapper { overflow: hidden; }
 	#pageScroller { display: flex; }
-	.game-page { width: 100%; height: 100%; flex-shrink: 0; text-align: center; }
+	.game-page { width: 100%; height: 100%; flex-shrink: 0; text-align: center; border: 1px solid #f00; box-sizing: border-box; }
 
 	.wrapper { overflow: hidden; }
 	.scroller { transform: translateZ(0); }

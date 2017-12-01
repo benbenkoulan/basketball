@@ -1,5 +1,6 @@
 <template>
 	<div id="container">
+		<router-link :to="{name: 'games'}">games</router-link>
 		<div id="wrapper">
 			<div id="scroller" ref="scroller">
 				<p v-for="(item, index) in items">{{index}}-----{{index}}----{{index}}</p>
@@ -9,12 +10,6 @@
 </template>
 
 <script>
-	var AlloyTouch;
-	if(process.browser){
-		AlloyTouch = require('alloytouch')
-	}
-	import Transform from 'css3transform'
-
 	import Scroll from 'com/scroll'
 
 	export default {
@@ -43,20 +38,6 @@
 				max: 0,
 				min: window.innerHeight - this.items.length * 80
 		 });
-			/*scroll.on('move', function(postion){
-				//console.log(postion);
-			})
-			.on('moveEnd', function(position){
-			});
-			Transform(this.scroller);
-			var alloyTouch = new AlloyTouch({
-				touch: '#wrapper',
-				target: this.scroller,
-				property: 'translateY',
-				step: 80,
-				max: 0,
-				min: window.innerHeight - this.items.length * 80
-			});*/
 		}
 	}
 </script>
