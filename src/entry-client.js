@@ -20,6 +20,7 @@ router.onReady(() => {
 		const matchedComponents = router.getMatchedComponents(to);
 		if(matchedComponents.length > 0){
 			let matched = matchedComponents[0];
+			matched.fetchData && matched.fetchData({ store, router })
 		}
 		next();
 	});

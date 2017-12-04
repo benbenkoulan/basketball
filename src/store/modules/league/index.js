@@ -5,8 +5,7 @@ const state = {
 }
 
 const mutations = {
-	FETCH_LEAGUES(state, leagues){;
-		console.log(leagues);
+	FETCH_LEAGUES(state, leagues){
 		state.leagues = leagues;
 	}
 }
