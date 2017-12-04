@@ -10,9 +10,11 @@ export default context => {
 		router.onReady(() => {
 			const matchedComponents = router.getMatchedComponents()
 			Promise.all(matchedComponents.map(matchedComponent => {
-
+				if(matchedComponent.fetchData){
+					return matchedComponent.fetchData({ store, router });
+				}
 			})).then(() => {
-				context.state = { test: 1 }
+				context.state = store.state;
 				resolve(app)
 			})
 		})

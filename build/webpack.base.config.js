@@ -54,6 +54,7 @@ module.exports = {
 			img: path.resolve('./src/img'),
 			css: path.resolve('./src/css'),
 			com: path.resolve('./src/com'),
+			api: path.resolve('./src/api'),
 			views: path.resolve('./src/views'),
 			utils: path.resolve('./src/utils'),
 			vue$: path.resolve('./lib/vue.runtime.esm.js')

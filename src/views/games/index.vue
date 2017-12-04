@@ -57,7 +57,6 @@
 			this.fetchData();
 		},
 		mounted(){
-			console.log(this.$store.state.test);
 			console.log('--------mounted--------');
 			vScrolls.doingScroll = new Scroll('#doingWrapper', {
 				slide: true,

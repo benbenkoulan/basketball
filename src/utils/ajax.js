@@ -4,6 +4,7 @@ function createAxios(context){
 	var headers = {};
 	var config = {
 		timeout: 5000,
+		baseURL: 'http://local.m.hualala.com:5000',
 		headers
 	}
 
@@ -20,7 +21,6 @@ function createAxios(context){
 
 export function get(options, context){
 	var axios = createAxios(context);
-
 	return new Promise(resolve => {
 		var callback = res => { resolve(res) }
 		axios.get(options.url, { params: options.params })

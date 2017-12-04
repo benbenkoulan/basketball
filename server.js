@@ -55,9 +55,23 @@ const render = (req, res) => {
 }
 
 
-app.get('*', isProd ? render : (req, res) => {
+app.get(/[^json]$/, isProd ? render : (req, res) => {
 	readyPromise.then(() => render(req, res))
-} )
+})
+
+app.get(/.json$/, (req, res) => {
+	res.type('.json');
+	let basePath = isProd ? './dist/' : './src/';
+	basePath = path.resolve(basePath);
+	let filePath = path.join(basePath, req.path);
+	if(fs.existsSync(filePath)){
+		var data = fs.readFileSync(filePath);
+		res.send(data);	
+	} else {
+		res.send('not found');
+	}
+});
+
 
 app.listen(5000, () => {
 	console.log('server started, listening port 5000')

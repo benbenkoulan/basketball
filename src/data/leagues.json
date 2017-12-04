@@ -1,0 +1,41 @@
+[{
+	"leagueID": "0",
+	"leagueName": "NBA",
+	"followAll": false,
+	"teams": [{
+		"leagueID": "0",
+		"teamID": "00",
+		"teamName": "湖人",
+		"follow": true
+	},{
+		"leagueID": "0",
+		"teamID": "01",
+		"teamName": "热火",
+		"follow": false
+	},{
+		"leagueID": "0",
+		"teamID": "02",
+		"teamName": "火箭",
+		"follow": true
+	}]
+},{
+	"leagueID": "1",
+	"leagueName": "CBA",
+	"followAll": false,
+	"teams": [{
+		"leagueID": "1",
+		"teamID": "10",
+		"teamName": "山东",
+		"follow": true
+	},{
+		"leagueID": "1",
+		"teamID": "11",
+		"teamName": "新疆",
+		"follow": true
+	},{
+		"leagueID": "1",
+		"teamID": "12",
+		"teamName": "广东",
+		"follow": true
+	}]
+}]
