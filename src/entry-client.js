@@ -1,8 +1,11 @@
-import { createApp } from './app'
+import { createApp, createLoading } from './app'
 
 var { app, store, router } = createApp()
 
-var G = { isClient: true }
+var loading = createLoading()
+document.body.appendChild(loading.$el)
+
+var G = { client: true }
 G.size = document.documentElement.getAttribute('data-size');
 
 if(window.__INITIAL_STATE__){
@@ -12,17 +15,23 @@ if(window.__INITIAL_STATE__){
 window.G = G;
 
 router.onReady(() => {
-	console.log('--onReady------');
 	router.beforeResolve((to, fr, next) => {
 		console.log('--beforeResolve------');
-		console.log(to);
-		console.log(fr);
 		const matchedComponents = router.getMatchedComponents(to);
-		if(matchedComponents.length > 0){
-			let matched = matchedComponents[0];
-			matched.fetchData && matched.fetchData({ store, router })
+		if(matchedComponents.length){
+			loading.load();
+			Promise.all(matchedComponents.map(matched => {
+				return matched.fetchData && matched.fetchData({ store, router })
+			})).then(() => {
+				loading.loaded();
+			})
 		}
 		next();
 	});
-	app.$mount('#page')
+	app.$mount('#page');
+})
+
+router.onError((err) => {
+	console.log('-------error--------');
+	console.log(err);
 })

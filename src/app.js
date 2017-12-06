@@ -6,6 +6,8 @@ import style from 'css/style'
 import createStore from './store'
 import createRouter from './router'
 
+import loading from 'com/loading'
+
 Vue.use(Vuex)
 
 export function createApp(){
@@ -19,4 +21,8 @@ export function createApp(){
 	})
 
 	return { app, store, router }
+}
+
+export function createLoading(){
+	 return new Vue(loading).$mount()
 }

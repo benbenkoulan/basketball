@@ -8,7 +8,7 @@ function createAxios(context){
 		headers
 	}
 
-	if(!G.isClient && context){
+	if(!G.client && context){
 		headers.Host = context.Host;
 		headers.Cookie = context.Cookie;
 		headers.Origin = context.Origin;

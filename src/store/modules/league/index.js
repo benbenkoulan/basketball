@@ -15,8 +15,21 @@ const actions = {
 		return getLeagues().then(rsp => {
 			var leagues = rsp.data;
 			commit('FETCH_LEAGUES', leagues)
-		});
+		})
+	},
+	UPDATE_LEAGUES({ commit }, leagues){
+		commit('FETCH_LEAGUES', leagues)
 	}
 }
 
-export default { state, mutations, actions }
+const getters = {
+	followedTeams(state){
+		var teams = [];
+		state.leagues.forEach(league => {
+			teams = teams.concat(league.teams.filter(team => team.follow));
+		})
+		return teams;
+	}
+}
+
+export default { state, mutations, actions, getters }

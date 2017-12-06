@@ -24,7 +24,6 @@
 <script>
 	import tab from './tab'
 	import Scroll from 'com/scroll'
-	import { requestAnimationFrame, cancelAnimationFrame } from 'utils/raf'
 
 	var hScroll,
 		vScrolls = {}
@@ -84,9 +83,6 @@
 				let position = this.getPosition();
 				let X = Math.abs(position.X);
 				self.index = Math.round(X / window.innerWidth);
-			})
-			.on('moveEnd', function(){
-				self.index = this.getIndex();
 			})
 		},
 		methods: {

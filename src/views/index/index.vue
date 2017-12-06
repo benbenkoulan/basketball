@@ -3,6 +3,8 @@
 		<router-link :to="{name: 'games'}">games</router-link>
 		<br>
 		<router-link :to="{name: 'follow'}">follow</router-link>
+		<br>
+		<router-link :to="{name: 'haha'}">haha</router-link>
 		<div id="wrapper">
 			<div id="scroller" ref="scroller">
 				<p v-for="(item, index) in items">{{index}}-----{{index}}----{{index}}</p>

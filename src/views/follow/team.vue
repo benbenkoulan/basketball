@@ -15,16 +15,16 @@
 				default(){
 					return 'TEAM'
 				}
-			},
+			},	
 			team: Object,
 			league: Object
 		},
 		methods: {
 			follow(){
 				if(this.type === 'TEAM') {
-					this.$emit('clickFollow', this.team.leagueID, this.team.teamID)
+					this.$emit('clickFollowTeam', this.team)
 				} else {
-					this.$emit('clickFollowAll', this.league.leagueID)
+					this.$emit('clickFollowLeague', this.league)
 				}
 			}
 		}
@@ -32,12 +32,12 @@
 </script>
 
 <style scoped>
-	.follow-info .follow-team { position: relative; padding: 0 1.2rem 0 0.4rem; height: 1rem; line-height: 1rem; background-color: #f0f0f0; border-bottom: 1px solid #fff; }
-	.follow-info .follow-team.follow:after{
+	.follow-team { position: relative; padding: 0 1.2rem 0 0.4rem; height: 1rem; line-height: 1rem; background-color: #f0f0f0; border-bottom: 2px solid #fff; }
+	.follow-team.follow:after{
 		background-image: url(~img/follow.svg);
 	}
 
-	.follow-info .follow-team:after{
+	.follow-team:after{
 		content: '';
 		position: absolute;
 		top: 0.25rem;

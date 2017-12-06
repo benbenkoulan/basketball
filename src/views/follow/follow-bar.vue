@@ -1,6 +1,6 @@
 <template>
 	<div class="follow-bar">
-		<div class="posr follow-header" @click="showFollowInfo = !showFollowInfo;">
+		<div class="posr follow-header" @click="toggleFollowInfo">
 			{{league.leagueName}}
 			<div class="follow-desc">
 				<p v-show="followCount">已关注{{followCount}}个</p>
@@ -8,8 +8,8 @@
 			</div>
 		</div>
 		<div class="follow-info" v-show="showFollowInfo">
-			<team :type="'ALL'" :league="league" @clickFollowAll="$emit('clickFollowAll', league.leagueID)"></team>
-			<team v-for="team in league.teams" :team="team" :key="team.teamID" :type="'TEAM'" @clickFollow="$emit('clickFollow', league.leagueID, team.teamID)"></team>
+			<team :type="'ALL'" :league="league" @clickFollowLeague="$emit('clickFollowLeague', league)"></team>
+			<team v-for="team in league.teams" :team="team" :key="team.teamID" :type="'TEAM'" @clickFollowTeam="$emit('clickFollowTeam', team)"></team>
 		</div>
 	</div>
 </template>
@@ -45,7 +45,13 @@
 				}
 			}
 		},
-		components: { team }
+		components: { team },
+		methods: {
+			toggleFollowInfo(){
+				this.showFollowInfo = !this.showFollowInfo;
+				this.$emit('clickArrow')
+			}
+		}
 	}
 </script>
 

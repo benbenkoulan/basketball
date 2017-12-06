@@ -1,6 +1,8 @@
 import { setTransform, getTransform, setDuration } from './dom'
-import eventExtend from 'utils/eventExtend'
+import eventExtend from 'utils/event-extend'
 import { requestAnimationFrame, cancelAnimationFrame } from 'utils/raf'
+
+var properties = ['deceleration', 'noBounce', 'wheel', 'slide', 'loop', 'noOutOfBounds', 'step', 'name', 'vertical', 'max', 'min']
 
 function Scroll(el, options){
 	this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
@@ -41,9 +43,10 @@ function init(){
 		this.index = 1;
 		this.slideTo();
 	}
-	this.wrapper.addEventListener('touchstart', preventDefault(start, this));
+	
+	this.wrapper.addEventListener('touchstart', bind(start, this));
 	this.wrapper.addEventListener('touchmove', preventDefault(move, this));
-	this.wrapper.addEventListener('touchend', preventDefault(end, this));
+	this.wrapper.addEventListener('touchend', bind(end, this));
 
 	var self = this;
 	var transitionHandler = function(e){
@@ -57,8 +60,16 @@ function init(){
 
 function preventDefault(fn, context){
 	return function(e){
-		e.preventDefault();
-		fn.call(context, e);
+		if(/^touch/.test(e.type)){
+			e.preventDefault();	
+			fn.call(context, e);
+		}
+	}
+}
+
+function bind(fn, context){
+	return function(e){
+		if(/^touch/.test(e.type)) fn.call(context, e);
 	}
 }
 
@@ -278,6 +289,13 @@ Scroll.prototype.stopAutoPlay = function(){
 
 Scroll.prototype.pause = function(){
 	this.scroller.style.transitionDuration = '0';
+}
+
+Scroll.prototype.updateOptions = function(options){
+	for(let property in options){
+		if(properties.indexOf(property) == -1) continue;
+		this[property] = options[property];
+	}
 }
 
 eventExtend(Scroll);
