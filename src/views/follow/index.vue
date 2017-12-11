@@ -10,7 +10,7 @@
 			<div id="scroller">
 				<div class="wrapper follow-list">
 					<div class="scroller" ref="followListScroller">
-						<follow-bar v-for="league in leagues" :key="league.leagueID" :league="league" @clickFollowTeam="followTeam" @clickFollowLeague="followLeague" @clickArrow="refreshFollowScroll"></follow-bar>
+						<follow-bar v-for="league in leagues" :key="league.leagueID" :league="league" @clickFollowTeam="followTeam" @clickFollowLeague="followLeague" @clickArrow="updateFollowScroll"></follow-bar>
 					</div>
 				</div>
 				<div class="wrapper followed-list">
@@ -63,10 +63,10 @@
 			index(newIndex, oldIndex){
 				this.oldIndex = oldIndex;
 				if(oldIndex == 0 && newIndex == 1){
-					this.refreshFollowedList();
-					this.refreshFollowedScroll();
+					this.updateFollowedList();
+					this.updateFollowedScroll();
 				} else if(oldIndex == 1 && newIndex == 0){
-					this.refreshFollowList();
+					this.updateFollowList();
 				}
 			}
 		},
@@ -93,7 +93,7 @@
 			return new Promise(resolve => {
 				setTimeout(function(){
 					Promise.all([fetchLeagues, fetchTeams]).then(resolve);
-				}, 1000)
+				}, 0)
 			})
 		},
 		methods: {
@@ -117,7 +117,7 @@
 					return team;
 				})
 			},
-			refreshFollowList(){
+			updateFollowList(){
 				var unFollowTeams = this.teams.filter(team => !team.follow);
 				unFollowTeams.forEach(unFollowTeam => {
 					let league = this.getLeague(unFollowTeam.leagueID);
@@ -130,16 +130,16 @@
 				})
 				this.$store.dispatch('UPDATE_LEAGUES', leagues);
 			},
-			refreshFollowedList(){
+			updateFollowedList(){
 				this.$store.dispatch('UPDATE_FOLLOW_TEAMS', this.followedTeams);
 			},
-			refreshFollowScroll(){
+			updateFollowScroll(){
 				this.$nextTick(() => {
 					var min = window.innerHeight - this.followListScroller.clientHeight - G.size * 2.4;
 					followScroll && followScroll.updateOptions({ min, noOutOfBounds: min > 0 });
 				})
 			},
-			refreshFollowedScroll(){
+			updateFollowedScroll(){
 				this.$nextTick(() => {
 					var min = window.innerHeight - this.followedListScroller.clientHeight - G.size * 2.4;
 					followedScroll && followedScroll.updateOptions({ min, noOutOfBounds: min > 0 });
@@ -157,8 +157,9 @@
 	#header .tab.active { background: #fff; color: #63B8FF; }
 
 	#content { flex: 1; overflow-y: auto; }
-	#scroller { display: flex; height: 100%; }
+	#scroller { display: flex; height: 100%; will-change: transform; }
 	#scroller .wrapper { width: 100%; height: 100%; flex-shrink: 0; }
+	#scroller .wrapper .scroller { will-change: transform; }
 	.followed-list { padding-bottom: 2px; background-color: #f0f0f0; }
 	
 	#footer { padding: 0 0.2rem; width: 100%; height: 1.2rem; flex-shrink: 0; border-top: 1px solid #cccccc; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }

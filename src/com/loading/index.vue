@@ -14,10 +14,10 @@
 			}
 		},
 		methods: {
-			load(){
+			start(){
 				this.show = true;
 			},
-			loaded(){
+			stop(){
 				this.show = false;
 			}
 		}

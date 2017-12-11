@@ -26,22 +26,13 @@
 		computed: {
 			items(){
 				var items = [];
-				items.length = 200;
-				return items.fill(200);
+				return items;
 			},
 			scroller(){
 				return this.$refs.scroller;
 			}
 		},
 		mounted(){
-			var scroll = new Scroll('#wrapper', { 
-				vertical: true, 
-				slide: true, 
-				deceleration: 0.008,
-				step: 80,
-				max: 0,
-				min: window.innerHeight - this.items.length * 80
-			});
 		}
 	}
 </script>

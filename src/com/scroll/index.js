@@ -26,6 +26,8 @@ function Scroll(el, options){
 
 	this.isStart = false;
 	this.isLocked = false;
+
+	eventExtend(this);
 	init.call(this);
 }
 
@@ -45,7 +47,7 @@ function init(){
 	}
 	
 	this.wrapper.addEventListener('touchstart', bind(start, this));
-	this.wrapper.addEventListener('touchmove', preventDefault(move, this));
+	this.wrapper.addEventListener('touchmove', preventDefault(move, this), { passive: false });
 	this.wrapper.addEventListener('touchend', bind(end, this));
 
 	var self = this;
@@ -297,7 +299,5 @@ Scroll.prototype.updateOptions = function(options){
 		this[property] = options[property];
 	}
 }
-
-eventExtend(Scroll);
 
 export default Scroll;

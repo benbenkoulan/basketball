@@ -19,11 +19,11 @@ router.onReady(() => {
 		console.log('--beforeResolve------');
 		const matchedComponents = router.getMatchedComponents(to);
 		if(matchedComponents.length){
-			loading.load();
+			loading.start();
 			Promise.all(matchedComponents.map(matched => {
 				return matched.fetchData && matched.fetchData({ store, router })
 			})).then(() => {
-				loading.loaded();
+				loading.stop();
 			})
 		}
 		next();
@@ -33,5 +33,5 @@ router.onReady(() => {
 
 router.onError((err) => {
 	console.log('-------error--------');
-	console.log(err);
+	alert(err);
 })
