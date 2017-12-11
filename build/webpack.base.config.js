@@ -7,7 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const plugins = [ new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development') }) ]
 
-if(isProd) plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }))
+//if(isProd) plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }))
 
 if(isProd) plugins.push(new ExtractTextPlugin('css/style.[contenthash:8].css'))
 
@@ -15,7 +15,7 @@ if(isProd) plugins.push(new ExtractTextPlugin('css/style.[contenthash:8].css'))
 module.exports = {
 	output: {
 		publicPath: '/assets/',
-		path: path.resolve(__dirname, '../dist'),
+		path: path.resolve(__dirname, '../docs'),
 		filename: isProd ? '[name].[chunkhash].js' : '[name].[hash].js',
 		chunkFilename: isProd ? '[name].[chunkhash].js' : '[name].[hash].js'
 	},
