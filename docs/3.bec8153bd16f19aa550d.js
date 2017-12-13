@@ -1,1 +1,0 @@
-webpackJsonp([3],{55:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var r=t(89),u=t.n(r),a=t(90),c=t(3),l=c(u.a,a.a,null,null,null);n.default=l.exports},89:function(e,n){},90:function(e,n,t){"use strict";var r=function(){var e=this,n=e.$createElement;return(e._self._c||n)("div",[e._v("\n\t这是测试页面\n")])},u=[],a={render:r,staticRenderFns:u};n.a=a}});

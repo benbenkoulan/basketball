@@ -20,8 +20,8 @@ function createRenderer(bundle, options){
 }
 
 if(isProd){
-	const serverBundle = require('./docs/vue-ssr-server-bundle.json')
-	const clientManifest = require('./docs/vue-ssr-client-manifest.json')
+	const serverBundle = require('./dist/vue-ssr-server-bundle.json')
+	const clientManifest = require('./dist/vue-ssr-client-manifest.json')
 	bundleRenderer = createRenderer(serverBundle, { clientManifest })
 } else {
 	readyPromise = require('./build/dev-server')(app, (bundle, options) => {
@@ -30,7 +30,7 @@ if(isProd){
 }
 
 
-app.use('/assets', express.static(path.resolve('./docs/')))
+app.use('/assets', express.static(path.resolve('./dist/')))
 app.use('/public', express.static(path.resolve('./public/')))
 
 const render = (req, res) => {
