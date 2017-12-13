@@ -15,6 +15,7 @@ function Scroll(el, options){
 	this.slide = !!options.slide;	//滑动
 	this.loop = !!options.loop;		//循环
 	this.step = options.step;
+	this.bounceThreshold = options.bounceThreshold || 0.5;	//弹性的阀值
 
 	this.name = options.name;
 
@@ -96,7 +97,7 @@ function start(e){
 	this.directionLocked = '';
 	this.isLocked = false;
 
-	this.trigger('start');
+	this.trigger('moveStart');
 }
 
 function move(e){
@@ -175,7 +176,7 @@ function end(e){
 			let distance = current - this.start;
 			let md = Math.abs(distance % this.step);
 			let d;
-			if(md > this.step / 2){
+			if(md > this.step * this.bounceThreshold){
 				d = (this.step - md) * (distance > 0 ? 1 : -1);
 			} else {
 				d = md * (distance > 0 ? -1 : 1);
@@ -209,7 +210,7 @@ function setPosition(position, duration = 0){
 	setTransform(this.scroller, `translate3d(${position.X}px, ${position.Y}px, 0)`);
 	if(this.wheel){
 		this.items.forEach((item, i) => {
-			let deg = ((position.Y / this.step) + i) * this.step / 2;
+			let deg = ((position.Y / this.step) + i) * this.step * this.bounceThreshold;
 			setDuration(item, `${duration}ms`);
 			setTransform(item, `rotateX(${deg}deg)`);
 		})
@@ -259,7 +260,7 @@ Scroll.prototype.slideTo = function(i, duration){
 Scroll.prototype.getIndex = function(){
 	if(!this.step) return;
 	var position = this.getPosition();
-	return Math.abs(Math.floor(position[this.property] / this.step));
+	return Math.round(Math.abs(position[this.property]) / this.step);
 }
 
 Scroll.prototype.fixLoop = function(){

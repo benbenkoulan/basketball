@@ -39,7 +39,9 @@
 	export default {
 		data(){
 			return {
-				index: 0
+				index: 0,
+				_index: 0
+
 			}
 		},
 		computed: {
@@ -71,13 +73,22 @@
 			}
 		},
 		mounted(){
-			hScroll = new Scroll('#content', { max: 0, noOutOfBounds: true, min: -window.innerWidth, step: window.innerWidth })
+			hScroll = new Scroll('#content', { max: 0, noOutOfBounds: true, min: -window.innerWidth, step: window.innerWidth, bounceThreshold: 1 / 3 })
 
 			var self = this;
-			hScroll.on('move', function(){
-				let position = this.getPosition();
-				let X = Math.abs(position.X);
-				self.index = Math.round(X / window.innerWidth);
+			hScroll.on('moveStart', function(){
+				self._index = this.getIndex();
+			})
+			.on('move', function(){
+				let direction = this.distX < 0 ? 1 : -1;
+				if(Math.abs(this.distX) > window.innerWidth * this.bounceThreshold){
+					self.index = self._index + direction;
+				} else {
+					self.index = self._index;
+				}
+			})
+			.on('moveEnd', function(){
+				self.index = this.getIndex();
 			})
 
 			var followMin = window.innerHeight - this.followListScroller.clientHeight - G.size * 2.4;
