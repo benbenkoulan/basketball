@@ -46,10 +46,14 @@ function init(){
 		this.index = 1;
 		this.slideTo();
 	}
-	
-	this.wrapper.addEventListener('touchstart', bind(start, this));
-	this.wrapper.addEventListener('touchmove', preventDefault(move, this), { passive: false });
-	this.wrapper.addEventListener('touchend', bind(end, this));
+
+	this.startHandler = start.bind(this);
+	this.moveHandler = preventDefault(move, this);
+	this.endHandler = end.bind(this);
+
+	this.wrapper.addEventListener('touchstart', this.startHandler);
+	this.wrapper.addEventListener('touchmove', this.moveHandler, { passive: false });
+	this.wrapper.addEventListener('touchend', this.endHandler);
 
 	var self = this;
 	var transitionHandler = function(e){
@@ -300,5 +304,12 @@ Scroll.prototype.updateOptions = function(options){
 		this[property] = options[property];
 	}
 }
+
+Scroll.prototype.destory = function(){
+	this.stopAutoPlay();
+	this.wrapper.removeEventListener('touchstart', this.startHandler);
+	this.wrapper.removeEventListener('touchmove', this.moveHandler);
+	this.wrapper.removeEventListener('touchend', this.endHandler);
+} 
 
 export default Scroll;
