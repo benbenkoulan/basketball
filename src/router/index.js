@@ -7,6 +7,7 @@ const getIndexView = () => import('../views/index')
 const getGamesView = () => import('../views/games')
 const getFollowView = () => import('../views/follow')
 const getTestView = () => import('../views/test')
+const getLayoutView = () => import('../views/layout')
 
 export default function createRouter(){
 	return new VueRouter({
@@ -30,6 +31,10 @@ export default function createRouter(){
 			name: 'follow',
 			path: '/follow',
 			component: getFollowView
+		},{
+			name: 'layout',
+			path: '/layout',
+			component: getLayoutView
 		}]
 	})
 }

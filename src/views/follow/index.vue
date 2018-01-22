@@ -30,7 +30,8 @@
 	import team from './team'
 	import followBar from './follow-bar'
 
-	import Scroll from 'com/scroll'
+	//import MobileScroll from 'mobilescroll'
+	import MobileScroll from 'com/scroll'
 
 	var hScroll,
 		followScroll,
@@ -73,7 +74,7 @@
 			}
 		},
 		mounted(){
-			hScroll = new Scroll('#content', { max: 0, noOutOfBounds: true, min: -window.innerWidth, step: window.innerWidth, bounceThreshold: 1 / 3 })
+			hScroll = new MobileScroll('#content', { max: 0, noOutOfBounds: true, min: -window.innerWidth, step: window.innerWidth, bounceThreshold: 1 / 3 })
 
 			var self = this;
 			hScroll.on('moveStart', function(){
@@ -86,16 +87,21 @@
 				} else {
 					self.index = self._index;
 				}
+				if(self.index < 0){
+					self.index = 0;
+				} else if(self.index > 1){
+					self.index = 1;
+				}
 			})
 			.on('moveEnd', function(){
 				self.index = this.getIndex();
 			})
 
 			var followMin = window.innerHeight - this.followListScroller.clientHeight - G.size * 2.4;
-			followScroll = new Scroll('.follow-list', { slide: true, vertical: true, max: 0, min: followMin, noOutOfBounds: followMin > 0 })
+			followScroll = new MobileScroll('.follow-list', { slide: true, vertical: true, max: 0, min: followMin, noOutOfBounds: followMin > 0 })
 
 			var followedMin = window.innerHeight - this.followedListScroller.clientHeight - G.size * 2.4;
-			followedScroll = new Scroll('.followed-list', { slide: true, vertical: true, max: 0, min: followedMin, noOutOfBounds: followedMin > 0 })
+			followedScroll = new MobileScroll('.followed-list', { slide: true, vertical: true, max: 0, min: followedMin, noOutOfBounds: followedMin > 0 })
 		},
 		components: { team, followBar },
 		fetchData({ store, router }){

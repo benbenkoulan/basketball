@@ -23,7 +23,9 @@
 
 <script>
 	import tab from './tab'
-	import Scroll from 'com/scroll'
+
+	//import MobileScroll from 'mobilescroll'
+	import MobileScroll from 'com/scroll'
 
 	var hScroll,
 		vScrolls = {}
@@ -57,21 +59,21 @@
 		},
 		mounted(){
 			console.log('--------mounted--------');
-			vScrolls.doingScroll = new Scroll('#doingWrapper', {
+			vScrolls.doingScroll = new MobileScroll('#doingWrapper', {
 				slide: true,
 				vertical: true,
 				max: 0,
 				min: window.innerHeight - this.doingScroller.clientHeight - G.size,
 			});
 
-			vScrolls.doneScroll = new Scroll('#doneWrapper', {
+			vScrolls.doneScroll = new MobileScroll('#doneWrapper', {
 				slide: true,
 				vertical: true,
 				max: 0,
 				min: window.innerHeight - this.doneScroller.clientHeight - G.size,
 			});
 
-			hScroll = new Scroll('#pageWrapper', {
+			hScroll = new MobileScroll('#pageWrapper', {
 				max: 0,
 				noOutOfBounds: true,
 				min: -window.innerWidth,

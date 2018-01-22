@@ -5,6 +5,10 @@
 		<router-link :to="{name: 'follow'}">follow</router-link>
 		<br>
 		<router-link :to="{name: 'haha'}">haha</router-link>
+		<br>
+		<router-link :to="{name: 'layout'}">layout</router-link>
+		<br>
+		<router-link :to="{name: 'test'}">test</router-link>
 		<div id="wrapper">
 			<div id="scroller" ref="scroller">
 				<p v-for="(item, index) in items">{{index}}-----{{index}}----{{index}}</p>
@@ -14,8 +18,6 @@
 </template>
 
 <script>
-	import Scroll from 'com/scroll'
-
 	export default {
 		name: 'index',
 		data(){

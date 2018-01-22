@@ -37,6 +37,7 @@ const render = (req, res) => {
 	res.setHeader('Content-Type', 'text/html')
 	let html = ''
 	let context = { url: req.url, title: '哇哦篮球' }
+	console.log(req.url);
 	let stream = bundleRenderer.renderToStream(context)
 
 	stream.on('data', data => {
@@ -55,8 +56,12 @@ const render = (req, res) => {
 }
 
 
-app.get(/[^json]$/, isProd ? render : (req, res) => {
-	readyPromise.then(() => render(req, res))
+app.get(/[^json]/, isProd ? render : (req, res) => {
+	readyPromise
+	.then(() => render(req, res))
+	.catch(err => {
+		console.log(err);
+	})
 })
 
 app.get(/.json$/, (req, res) => {
