@@ -33,5 +33,6 @@ router.onReady(() => {
 
 router.onError((err) => {
 	console.log('-------error--------');
-	alert(err);
+	//alert(err);
+	throw err;
 })

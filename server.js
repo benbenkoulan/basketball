@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
+const wss = require('./src/com/websocket/server').getWSS();
 
 const isProd = process.env.NODE_ENV === 'production'
 

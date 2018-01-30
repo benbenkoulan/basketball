@@ -8,6 +8,7 @@
 			<div id="pageScroller">
 				<div id="doingWrapper" class="wrapper game-page">
 					<div class="scroller" ref="doingScroller">
+						<!-- <game v-for="game in games"></game> -->
 						<p v-for="(item, index) in items">{{index}}-----{{index}}----{{index}}</p>
 					</div>
 				</div>
@@ -23,9 +24,10 @@
 
 <script>
 	import tab from './tab'
+	import game from './game'
 
-	//import MobileScroll from 'mobilescroll'
-	import MobileScroll from 'com/scroll'
+	import MobileScroll from 'mobilescroll'
+	import WSC from 'com/websocket/client'
 
 	var hScroll,
 		vScrolls = {}
@@ -33,7 +35,8 @@
 	export default {
 		data(){
 			return {
-				index: 0
+				index: 0,
+				games: []
 			}
 		},
 		computed: {
@@ -49,11 +52,7 @@
 				return this.$refs.doneScroller;
 			}
 		},
-		components: { tab },
-		/*beforeRouteEnter(to, from, next){
-			console.log('------beforeRouteUpdate---------');
-			next();
-		},*/
+		components: { tab, game },
 		created(){
 			this.fetchData();
 		},
@@ -86,6 +85,8 @@
 				let X = Math.abs(position.X);
 				self.index = Math.round(X / window.innerWidth);
 			})
+
+			var wsc = new WSC();
 		},
 		methods: {
 			fetchData(){
@@ -107,7 +108,7 @@
 
 	#pageWrapper { overflow: hidden; }
 	#pageScroller { display: flex; }
-	.game-page { width: 100%; height: 100%; flex-shrink: 0; text-align: center; border: 1px solid #f00; box-sizing: border-box; }
+	.game-page { width: 100%; height: 100%; flex-shrink: 0; text-align: center; box-sizing: border-box; }
 
 	.wrapper { overflow: hidden; }
 	.scroller { transform: translateZ(0); }

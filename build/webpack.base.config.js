@@ -50,7 +50,8 @@ module.exports = {
 			api: path.resolve('./src/api'),
 			views: path.resolve('./src/views'),
 			utils: path.resolve('./src/utils'),
-			vue$: path.resolve('./lib/vue.runtime.esm.js')
+			vue$: path.resolve('./lib/vue.runtime.esm.js'),
+			modules: path.resolve('./src/modules')
 		},
 		extensions: ['.js', '.css', '.vue']
 	},
