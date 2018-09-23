@@ -1,54 +1,42 @@
 <template>
-	<div id="container">
-		<router-link :to="{name: 'games'}">games</router-link>
-		<br>
-		<router-link :to="{name: 'follow'}">follow</router-link>
-		<br>
-		<router-link :to="{name: 'haha'}">haha</router-link>
-		<br>
-		<router-link :to="{name: 'layout'}">layout</router-link>
-		<br>
-		<router-link :to="{name: 'test'}">test</router-link>
-		<div id="wrapper">
-			<div id="scroller" ref="scroller">
-				<p v-for="(item, index) in items">{{index}}-----{{index}}----{{index}}</p>
-			</div>
+	<div class="view-index">
+		<div class="wao-row wao-flex">
+			<router-link class="wao-flex__item" to="games">games</router-link>
+			<router-link class="wao-flex__item" to="follow">follow</router-link>
+			<router-link class="wao-flex__item" to="layout">layout</router-link>
+			<router-link class="wao-flex__item" to="admin">admin</router-link>
+			<router-link class="wao-flex__item" to="follow2">follow2</router-link>
+		</div>
+		<div class="wao-row wao-grid">
+			<router-link class="wao-grid__6" to="games">games</router-link>
+			<router-link class="wao-grid__6" to="follow">follow</router-link>
+			<router-link class="wao-grid__6" to="layout">layout</router-link>
+			<router-link class="wao-grid__6" to="layout2">layout2</router-link>
+			<router-link class="wao-grid__6" to="admin">admin</router-link>
+			<router-link class="wao-grid__6" to="follow2">follow2</router-link>
 		</div>
 	</div>
 </template>
 
 <script>
 	export default {
-		name: 'index',
 		data(){
 			return {
 
 			}
 		},
 		computed: {
-			items(){
-				var items = [];
-				return items;
-			},
-			scroller(){
-				return this.$refs.scroller;
-			}
 		},
 		mounted(){
 		}
 	}
 </script>
 
-<style scoped>
-	#container { overflow: hidden; height: 100%; }
-	#wrapper { overflow: hidden; }
-	#scroller {
-	    -webkit-tap-highlight-color: rgba(0,0,0,0);
-	    width: 100%;
-	    user-select: none;
-	    text-size-adjust: none;
-	    transform: translateZ(0);
-	    -webkit-touch-callout: none;
-	}
-	#scroller p { height: 80px; line-height: 80px; border: 1px solid #ff0000; box-sizing: border-box; }
+<style>
+@import 'layout';
+.view-index {
+	height: 100%; text-align: center;
+	& .wao-flex__item { background-color: #00BFFF; color: #ffffff; }
+	& .wao-grid__6 { background-color: #ff893a; color: #ffffff; }
+}
 </style>

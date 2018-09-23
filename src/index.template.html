@@ -2,26 +2,25 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
 	<link rel="shortcut icon" sizes="48x48" href="/public/basketball.jpg">
 	<title>{{title}}</title>
 	<script>
-		var dpr, fontSize, scale, width;
-		var docEl = document.documentElement;
-		var styleEl = document.createElement('style');
-		var metaEl = document.querySelector('meta[name="viewport"]');
-		dpr = window.devicePixelRatio || 1;
-		scale = 1 / dpr;
-		metaEl.setAttribute('content', 'initial-scale=' + scale + ', maximum-scale= ' + scale + ', minimum-scale=' + scale + ', user-scalable=no');
-		docEl.setAttribute('data-dpr', dpr);
-		width = docEl.getBoundingClientRect().width;
-		if(width / dpr > 540){
-			width = 540 * dpr;
+		var resizeEvent = 'orientationchange' in window ? 'orientationchange' : 'resize'
+		function resize() {
+			let size;
+			const docEl = document.documentElement;
+			const styleEl = document.createElement('style');
+			let width = document.documentElement.clientWidth;
+			width = width > 640 ? 640 : width;
+			size = width / 375 * 14;
+			styleEl.innerHTML = 'html { font-size: ' + size + 'px }';
+			docEl.firstElementChild.appendChild(styleEl);
+			const G = window.G || (window.G = Object.create(null));
+			G.size = size;
 		}
-		fontSize = width / 10;
-		docEl.setAttribute('data-size', fontSize);
-		docEl.firstElementChild.appendChild(styleEl);
-		styleEl.innerHTML = 'html { font-size: ' + fontSize + 'px }';
+		resize();
+		window.addEventListener(resizeEvent, resize, false);
 	</script>
 </head>
 <body>

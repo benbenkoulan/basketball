@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import team from './modules/team'
 import league from './modules/league'
+import game from './modules/game'
 
 Vue.use(Vuex)
 
@@ -13,7 +13,7 @@ export default function createStore(){
 		//mutations,
 		//getters
 		modules: {
-			team,
+			game,
 			league
 		}
 	})

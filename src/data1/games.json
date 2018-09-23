@@ -1,0 +1,12 @@
+[
+  {
+    "home": "骑士",
+    "homeID": "123",
+    "homeScore": "0",
+    "guest": "勇士",
+    "guestID": "124",
+    "guestScore": "0",
+    "remark": "圣诞大战",
+    "beginTime": "09:00"
+  }
+]

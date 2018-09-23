@@ -1,14 +1,11 @@
 <template>
-	<div class="follow-team" :class="{'follow': isAll ? league.followAll : team.follow}" @click="follow">{{isAll ? '全部' : team.teamName}}</div>
+	<div class="follow-team" :class="{'follow': type === 'TEAM' ? team.follow : league.follow}" @click="follow">{{type === 'TEAM' ? team.teamName : '全部'}}</div>
 </template>
 
 <script>
+	import { mapMutations } from 'vuex'
+
 	export default {
-		computed: {
-			isAll(){
-				return this.type === 'ALL' 
-			}
-		},
 		props: {
 			type: {
 				type: String,
@@ -20,33 +17,39 @@
 			league: Object
 		},
 		methods: {
+			...mapMutations({
+				followTeam: 'FOLLOW_TEAM',
+				followLeague: 'FOLLOW_LEAGUE',
+			}),
+
 			follow(){
 				if(this.type === 'TEAM') {
-					this.$emit('clickFollowTeam', this.team)
+					this.followTeam({ leagueID: this.team.leagueID, teamID: this.team.teamID });
 				} else {
-					this.$emit('clickFollowLeague', this.league)
+					this.followLeague(this.league.leagueID);
 				}
-			}
+			},
 		}
 	}
 </script>
 
 <style scoped>
-	.follow-team { position: relative; padding: 0 1.2rem 0 0.4rem; height: 1rem; line-height: 1rem; background-color: #f0f0f0; border-bottom: 2px solid #fff; }
-	.follow-team.follow:after{
-		background-image: url(~img/follow.svg);
-	}
+.follow-team { position: relative; padding: .5em 3em .5em 1em; background-color: #f0f0f0; border-bottom: 2px solid #fff; }
+.follow-team.follow:after{
+	background-image: url(~img/follow.svg);
+}
 
-	.follow-team:after{
-		content: '';
-		position: absolute;
-		top: 0.25rem;
-		right: 0.4rem;
-		display: block;
-		width: 0.5rem;
-		height: 0.5rem;
-		background-size: 0.5rem;
-		background-repeat: no-repeat;
-		background-image: url(~img/unfollow.svg);
-	}
+.follow-team:after{
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 0.6em;
+	margin-top: -0.6em;
+	display: block;
+	width: 1.2em;
+	height: 1.2em;
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-image: url(~img/unfollow.svg);
+}
 </style>

@@ -1,20 +1,19 @@
 <template>
-	<div id="container">
-		<div class="tabs">
-			<div class="tab" :class="{'active': index == 0}" @click="slideTo(0)">进行中</div>
-			<div class="tab" :class="{'active': index == 1}" @click="slideTo(1)">已完成</div>
+	<div class="view-game">
+		<div class="wao-row wao-flex">
+			<div class="wao-flex__item" :class="{'active': index == 0}" @click="slideTo(0)">进行中</div>
+			<div class="wao-flex__item" :class="{'active': index == 1}" @click="slideTo(1)">已完成</div>
 		</div>
 		<div id="pageWrapper">
 			<div id="pageScroller">
 				<div id="doingWrapper" class="wrapper game-page">
 					<div class="scroller" ref="doingScroller">
-						<!-- <game v-for="game in games"></game> -->
-						<p v-for="(item, index) in items">{{index}}-----{{index}}----{{index}}</p>
+						<game v-for="game in games" :key="game.gameID" :game="game"></game>
 					</div>
 				</div>
 				<div id="doneWrapper" class="wrapper game-page">
 					<div class="scroller" ref="doneScroller">
-						<p v-for="(item, index) in items">{{index}}----{{index}}</p>
+						<p v-for="(item, index) in games">{{index}}----{{index}}</p>
 					</div>
 				</div>
 			</div>
@@ -23,8 +22,10 @@
 </template>
 
 <script>
-	import tab from './tab'
+	import { getGames } from 'api'
 	import game from './game'
+
+	import { mapState } from 'vuex'
 
 	import MobileScroll from 'mobilescroll'
 	import WSC from 'com/websocket/client'
@@ -36,40 +37,30 @@
 		data(){
 			return {
 				index: 0,
-				games: []
 			}
 		},
+
 		computed: {
-			items(){
-				var items = [];
-				items.length = 200;
-				return items.fill(200);
-			},
-			doingScroller(){
-				return this.$refs.doingScroller;
-			},
-			doneScroller(){
-				return this.$refs.doneScroller;
-			}
+			...mapState({
+				games: state => state.game.games,
+			}),
 		},
-		components: { tab, game },
-		created(){
-			this.fetchData();
-		},
+
 		mounted(){
-			console.log('--------mounted--------');
+			const doingScroller = this.$refs.doingScroller;
+			const doneScroller = this.$refs.doneScroller;
 			vScrolls.doingScroll = new MobileScroll('#doingWrapper', {
-				slide: true,
 				vertical: true,
+				slide: true,
 				max: 0,
-				min: window.innerHeight - this.doingScroller.clientHeight - G.size,
+				min: window.innerHeight - doingScroller.clientHeight - G.size,
 			});
 
 			vScrolls.doneScroll = new MobileScroll('#doneWrapper', {
-				slide: true,
 				vertical: true,
+				slide: true,
 				max: 0,
-				min: window.innerHeight - this.doneScroller.clientHeight - G.size,
+				min: window.innerHeight - doneScroller.clientHeight - G.size,
 			});
 
 			hScroll = new MobileScroll('#pageWrapper', {
@@ -79,38 +70,42 @@
 				step: window.innerWidth,
 			});
 
-			var self = this;
+			const self = this;
 			hScroll.on('move', function(){
 				let position = this.getPosition();
 				let X = Math.abs(position.X);
 				self.index = Math.round(X / window.innerWidth);
-			})
-
-			var wsc = new WSC();
+			});
+			// const wsc = new WSC();
 		},
+
+		fetchData({ store }) {
+			return store.dispatch('FETCH_GAMES');
+		},
+
 		methods: {
-			fetchData(){
-				console.log('----fetchData---------');
-			},
 			slideTo(index){
 				if(this.index == index) return;
 				this.index = index;
 				hScroll.slideTo(index, 500)
 			}
-		}
+		},
+
+		components: { game },
 	}
 </script>
 
-<style scoped>
-	.tabs { display: flex; position: relative; }
-	.tab { flex: 1; text-align: center; height: 1rem; line-height: 1rem; border-bottom: 1px solid #ccc; }
-	.tab.active { color: #00BFFF; border-bottom: 4px solid #00BFFF; }
+<style>
+@import 'layout';
+.view-game {
+	& .wao-flex__item { text-align: center; height: 3.6em; line-height: 3.6em; border-bottom: 1px solid #ccc; }
+	& .wao-flex__item.active { color: #00BFFF; border-bottom: 4px solid #00BFFF; }
 
-	#pageWrapper { overflow: hidden; }
-	#pageScroller { display: flex; }
-	.game-page { width: 100%; height: 100%; flex-shrink: 0; text-align: center; box-sizing: border-box; }
+	& #pageWrapper { overflow: hidden; }
+	& #pageScroller { display: flex; }
+	& .game-page { width: 100%; height: 100%; flex-shrink: 0; text-align: center; box-sizing: border-box; }
 
-	.wrapper { overflow: hidden; }
-	.scroller { transform: translateZ(0); }
-
+	& .wrapper { overflow: hidden; }
+	& .scroller { transform: translateZ(0); }
+}
 </style>

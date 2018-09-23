@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 const WebSocketServer = WebSocket.Server;
-const WEBSOCKET_PORT = 1000;
+const WEBSOCKET_PORT = 2000;
 
 var wss;
 
@@ -27,8 +27,8 @@ WSS.prototype = {
 		let event = this.events.find(function(event){
 			return event.type === type;
 		});
-		if(!event) this.push({ type, handler, context });
-		event.handler = handler;
+		if(!event) this.events.push({ type: type, handler: handler, context: context });
+		else event.handler = handler;
 		return this;
 	},
 

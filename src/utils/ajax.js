@@ -1,13 +1,12 @@
 import Axios from 'axios'
 
 function createAxios(context){
-	var headers = {};
-	var config = {
-		timeout: 5000,
-		baseURL: 'http://local.m.hualala.com:5000',
-		headers
+	const headers = {};
+	const config = {
+		timeout: 3000,
+		baseURL: 'http://basketball.m.hualala.com',
+		headers,
 	}
-
 	if(!G.client && context){
 		headers.Host = context.Host;
 		headers.Cookie = context.Cookie;
@@ -15,33 +14,29 @@ function createAxios(context){
 		headers.Referer = context.Referer;
 		headers['User-Agent'] = context['User-Agent'];
 	}
-
 	return Axios.create(config);
 }
 
-export function get(options, context){
-	var axios = createAxios(context);
+export default function get({ url = '', params = {} } = {}, context){
+	const axios = createAxios(context);
 	return new Promise(resolve => {
-		var callback = res => { resolve(res) }
-		axios.get(options.url, { params: options.params })
-		.then(callback)
+		axios.get(url, { params })
+		.then(resolve)
 		.catch(err => {
-			err.isError = true;
-			return err;
-		})
+			const { status: code = '', statusText: msg = '' } = err || {};
+			return { code, msg, isError: true };
+		});
 	});
 }
 
-export function post(options, context){
-	var axios = createAxios(context);
-
+export function post({ url = '', data = {} } = {}, context){
+	const axios = createAxios(context);
 	return new Promise(resolve => {
-		var callback = res => { resolve(res) }
-		axios.post(options.url, options.data)
-		.then(callback)
+		axios.post(url, { data })
+		.then(resolve)
 		.catch(err => {
-			err.isError = true;
-			return err;
+			const { status: code = '', statusText: msg = '' } = err || {};
+			return { code, msg, isError: true };
 		})
 	});
 }

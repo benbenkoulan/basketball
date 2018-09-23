@@ -1,35 +1,42 @@
 import { createApp, createLoading } from './app'
 
-var { app, store, router } = createApp()
+const { app, store, router } = createApp()
 
-var loading = createLoading()
+const loading = createLoading()
 document.body.appendChild(loading.$el)
 
-var G = { client: true }
-G.size = document.documentElement.getAttribute('data-size');
+const G = window.G || (window.G = Object.create(null));
+G.client = true;
+G.loading = loading;
 
 if(window.__INITIAL_STATE__){
-	store.replaceState(window.__INITIAL_STATE__);
+	const initialState = window.__INITIAL_STATE__;
+	const storeState = initialState.store || {};
+	const fetchState = initialState.fetch;
+	store.replaceState(storeState);
+	//Object.assign(app, fetchState);
 }
-
-window.G = G;
 
 router.onReady(() => {
 	router.beforeResolve((to, fr, next) => {
-		console.log('--beforeResolve------');
 		const matchedComponents = router.getMatchedComponents(to);
 		if(matchedComponents.length){
 			loading.start();
-			Promise.all(matchedComponents.map(matched => {
-				return matched.fetchData && matched.fetchData({ store, router })
-			})).then(() => {
+			const fetchDataPromises = [];
+			matchedComponents.forEach(matchedComponent => {
+				if (matchedComponent.fetchData) fetchDataPromises.push(matchedComponent.fetchData({ store, router }));
+			});
+			Promise.all(fetchDataPromises).then((states) => {
 				loading.stop();
 			})
+			.catch(() => {
+				loading.stop();	
+			});
 		}
 		next();
 	});
 	app.$mount('#page');
-})
+});
 
 router.onError((err) => {
 	console.log('-------error--------');

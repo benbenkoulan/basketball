@@ -54,15 +54,15 @@
 	}
 
 	function _scrollMenu(e){
-		let target = e.target;
-		let scrollTop = target.scrollTop;
+		const target = e.target;
+		const scrollTop = target.scrollTop;
 		let boxScrollTop = this.$refs.box.scrollTop;
 		if(boxScrollTop < this.topHeight || scrollTop < this.topHeight) {
-			boxScrollTop += scrollTop - this._scrollTop;
+			boxScrollTop += scrollTop - this.scrollTop;
 			if(boxScrollTop > this.topHeight) boxScrollTop = this.topHeight;
 			this.$refs.box.scrollTop = boxScrollTop;
 		}
-		this._scrollTop = scrollTop;
+		this.scrollTop = scrollTop;
 	}
 
 	var scrollMenu = debounce(_scrollMenu, 30);
@@ -71,7 +71,7 @@
 		data(){
 			return {
 				topHeight: 0,
-				_scrollTop: 0
+				scrollTop: 0
 			}
 		},
 		computed: {
@@ -91,12 +91,6 @@
 		},
 		methods: {
 			scrollMenu,
-			scrollTop(){
-				console.log('--------------');
-			},
-			scrollBox(e){
-				//console.log(e);
-			}
 		}
 	}
 </script>
@@ -104,12 +98,12 @@
 <style scoped>
 	#container { width: 100%; }
 	.box { height: 100vh; overflow-y: auto; }
-	.main-top { width: 100%; height: 4rem; background-color: #ff0000; }
-	.nav { width: 100%; height: 1rem; background-color: #ffff00; }
+	.main-top { width: 100%; height: 4em; background-color: #ff0000; }
+	.nav { width: 100%; height: 2em; background-color: #ffff00; }
 
 	.main { display: flex; height: 100%; overflow-y: auto; }
-	.main .categories { width: 2rem; height: 100%; overflow-y: auto; }
-	.main .category { margin-bottom: 1px; width: 100%; height: 1rem; background-color: #333333; }
+	.main .categories { width: 6em; height: 100%; overflow-y: auto; }
+	.main .category { margin-bottom: 1px; width: 100%; height: 3em; background-color: #333333; }
 	.main section { flex: 1; height: 100%; overflow-y: auto; }
-	.main .menu { margin: 20px; width: 3rem; height: 5rem; background-color: #000; color: #fff; }
+	.main .menu { margin: 20px; width: 6em; height: 6rem; background-color: #000; color: #fff; }
 </style>

@@ -4,7 +4,7 @@ const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const webpackMerge = require('webpack-merge')
 const nodeExternals = require('webpack-node-externals')
 
-module.exports = webpackMerge(baseConfig, {
+const serverConfig = webpackMerge(baseConfig, {
 	target: 'node',
 	entry: './src/entry-server.js',
 	devtool: '#source-map',
@@ -22,5 +22,14 @@ module.exports = webpackMerge(baseConfig, {
 			'process.env.VUE_ENV': 'server'
 		}),	
 		new VueSSRServerPlugin()
-	]
-})
+	],
+	module: {
+		rules: [{
+			test: /\.css$/,
+			exclude: /node_modules/,
+			loader: 'null-loader'
+		}]
+	}
+});
+
+module.exports = serverConfig;

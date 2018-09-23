@@ -1,6 +1,6 @@
 import Observer from 'modules/Observer'
 
-const WEBSOCKET_PORT = 1000;
+const WEBSOCKET_PORT = 2000;
 
 export default class WSC extends Observer {
 	constructor(){
